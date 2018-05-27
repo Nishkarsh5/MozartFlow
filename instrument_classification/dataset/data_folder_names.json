@@ -1,0 +1,22 @@
+{
+	"banjo": 1,
+	"bass clarinet": 2,
+	"bassoon": 3,
+	"cello": 4,
+	"clarinet": 5,
+	"contrabassoon": 6,
+	"cor anglais": 7,
+	"double bass": 8,
+	"flute": 9,
+	"french horn": 10,
+	"guitar": 11,
+	"mandolin": 12,
+	"oboe": 13,
+	"percussion": 14,
+	"saxophone": 15,
+	"trombone": 16,
+	"trumpet": 17,
+	"tuba": 18,
+	"viola": 19,
+	"violin": 20
+}
