@@ -5,17 +5,28 @@ import numpy as np
 
 
 class Classify:
-    def __init__(self):
-        with open('../config.yml', 'r') as outfile:
+    def __init__(self, loglevel):
+        self.loglevel = loglevel
+
+        with open('../_config.yml', 'r') as outfile:
             try:
-                read_yml = yaml.load(outfile)
+                self.read_yml = yaml.load(outfile)
+
             except yaml.YAMLError as error:
-                print(error)
+                self.loglevel.error('[!] _config.yml file not found:', error)
+        
+        with open(self.read_yml['_dataset']/self.read_yml['_dataFolderNames']+".json", 'r') as outfile:
+            try:
+                self.dataset_names = json.load(outfile)
 
-        self.dataset_foldername = read_yml['_datasetFolderName']
+            except FileNotFoundError:
+                self.loglevel.error('[!] dataset labels not found')
 
-    def trimming(self, files_pathlist):
+
+    def get_dataset(self):
         datalist = []
+
+        files_pathlist = self.get_path()
 
         for filepath in files_pathlist:
             DTFTarray, sampling_rate = librosa.load(filepath)
@@ -27,26 +38,14 @@ class Classify:
 
             mfccs = librosa.feature.mfccs(y=DTFTarray_trimmed, sr=sampling_rate)
             average = np.mean(mfccs, axis=1)
-
             features = average.reshape(20)
 
-            label = self.get_label(filepath)
+            label = self.dataset_names[(filename[9:12])]
+            
             datalist.append([filepath, feature, label])
 
         return datalist
 
-    @staticmethod
-    def get_label(filename):
-            if filename[9:12] is 'cel':
-                return 1
-            elif filename[9:12] is 'cla':
-                return 2
-            elif filename[9:12] is 'flu':
-                return 3
-            elif filename[9:12] is 'vio':
-                return 4
-            else:
-                raise NameError
 
     @staticmethod
     def get_silence(DTFTarray, threshold=0.001):
