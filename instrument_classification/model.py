@@ -122,7 +122,7 @@ class Model:
 def main():
     """Main method for machine learning model"""
     
-    self.logger = logging.getLogger()
+    logger = logging.getLogger()
 
     parser = argparse.ArgumentParser(description='MozartFlow: Observing the flow of music.')
 
