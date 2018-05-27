@@ -11,6 +11,8 @@ from sklearn.model_selection import train_test_split
 
 class Model:
     def __init__(self, knn, loglevel):
+        """initializing knn, loglevel instance, config file, and dataset name file"""
+
         self.knn = knn
         self.loglevel = loglevel
 
@@ -29,6 +31,8 @@ class Model:
                 self.loglevel.error('[/!/] dataset labels not found')
 
     def model(self):
+        """main model, with supervised machine learning; calls to process datasets"""
+
         self.loglevel.info('[*] Starting processing of dataset ...')
         cl = classify.Classify(self.loglevel)
         data = cl.get_dataset()
@@ -41,6 +45,8 @@ class Model:
 
 
     def train_and_test(self, data):
+        """begins the training and testing model"""
+
         np.random.shuffle(data)
         datatuple = unpack_data(data)
 
@@ -63,13 +69,17 @@ class Model:
 
 
     def train(self, data):
+        """training with full dataset, without testing"""
+
         self.loglevel('[.] Training with whole dataset ...')
         
         datatuple = unpack_data(data)
         self.KNN.fit(datatuple.features, datatuple.labels)
 
 
-    def test(self, filepath):
+    def prediction(self, filepath):
+        """prediction of the new audio input / filepath to that"""
+
         try:
             DTFTarray, sampling_rate = librosa.load(filepath)
         except Exception as e:
@@ -99,7 +109,8 @@ class Model:
 
 
     def unpack_data(self, data):        
-        
+        """unpacking data from list to numpy array; returning in namedtuple from collections"""
+
         filenames = np.array(map(lambda n: n[0], data))
         features = np.array(map(lambda n: n[1], data))
         labels = np.array(map(lambda n: n[0], data))
@@ -109,17 +120,25 @@ class Model:
 
 
 def main():
+    """Main method for machine learning model"""
+    
     self.logger = logging.getLogger()
 
     parser = argparse.ArgumentParser(description='MozartFlow: Observing the flow of music.')
 
-    parser.add_argument('-k', '-knn', help='K in K-nearest neighbours algorithm', default=5)
-    parser.add_argument('-ll', '-loglevel', help='Set the logging level', type=str, choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'])
-
+    parser.add_argument('-k', '--knn', help='K in K-nearest neighbours algorithm', default=5)
+    parser.add_argument('-ll', '--loglevel', help='Set the logging level', type=str, choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'])
+    parser.add_argument('-p', '--path', help='Filepath of the audio file, need to be labeled', type=str, default='')
+        
     args = parser.parse_args()
     logging.basicConfig(level=args.loglevel)
 
-    model = Model(args.knn, args.loglevel)
+    model = Model(args.knn, args.loglevel, args.testu)
+
+    if args.path is not '':
+        model.prediction(args.path)
+    else:
+        print('[-.-] Ain\'t you testing something! Well, that\'s a shame. I learned just for you.')
 
     print('----/---- Created by ----/----')
     for creator in model.read_yml['creator']:
