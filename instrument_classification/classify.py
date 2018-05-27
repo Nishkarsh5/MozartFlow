@@ -27,7 +27,8 @@ class Classify:
         datalist = []
 
         files_pathlist = self.get_path()
-
+        self.loglevel.info('[*] Iterating over instances of', str(len(files_pathlist)), 'file paths ...')
+        
         for filepath in files_pathlist:
             DTFTarray, sampling_rate = librosa.load(filepath)
 
@@ -44,11 +45,14 @@ class Classify:
             
             datalist.append([filepath, feature, label])
 
+        self.loglevel.info('[*] Dataset created and featured ...')
+        
         return datalist
 
 
-    @staticmethod
-    def get_silence(DTFTarray, threshold=0.001):
+    def get_silence(self, DTFTarray, threshold=0.001):
+        self.loglevel.info('[.] Threshold for silent part of audio is assumed to be', threshold)
+
         trim = 0
 
         DTFTarray = DTFTarray / max(DTFTarray)
@@ -60,8 +64,14 @@ class Classify:
 
         return trim
 
-    def get_path():
+    def get_path(self):
+        self.loglevel.warning('[!] Only .mp3 files are included in dataset')
+        
         files = glob.glob('./' + self.dataset_foldername + '/*/*.mp3')
         np.shuffle(files)
 
+        if len(files) == 0:
+            self.loglevel.warning('[!] No data files found! Application most likely will terminate ...')
+            self.loglevel.critical('[/!/] No path found for data files')
+        
         return files
