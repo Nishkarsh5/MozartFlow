@@ -6,6 +6,8 @@ import numpy as np
 
 class Classify:
     def __init__(self, loglevel):
+        """reading config file and dataset names file, and instantiate self.loglevel"""
+
         self.loglevel = loglevel
 
         with open('../_config.yml', 'r') as outfile:
@@ -24,6 +26,8 @@ class Classify:
 
 
     def get_dataset(self):
+        """create dataset with as [filepath, features, label], with initial trimming"""
+        
         datalist = []
 
         files_pathlist = self.get_path()
@@ -51,6 +55,8 @@ class Classify:
 
 
     def get_silence(self, DTFTarray, threshold=0.001):
+        """find the position till which audio is silent, default threshold=0.001"""
+
         self.loglevel.info('[.] Threshold for silent part of audio is assumed to be', threshold)
 
         trim = 0
@@ -65,6 +71,8 @@ class Classify:
         return trim
 
     def get_path(self):
+        """getting path of all data file with glob"""
+
         self.loglevel.warning('[!] Only .mp3 files are included in dataset')
         
         files = glob.glob('./' + self.dataset_foldername + '/*/*.mp3')
