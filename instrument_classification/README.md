@@ -32,6 +32,13 @@ gavy42@jarvis:~/MozartFlow/instrument_classification$
 
 - Instruments available are `["banjo", "bass clarinet", "bassoon", "cello", "clarinet", "contrabassoon", "cor anglais", "double bass", "flute", "french horn":, "guitar", "mandolin", "oboe", "percussion", "saxophone", "trombone", "trumpet", "tuba", "viola", "violin"]`.
 
+## Terminal Terminology
+- ```[.]``` : Info
+- ```[#]``` : Debug
+- ```[*]``` : Status
+- ```[!]``` : Warning
+- ```[/!/]``` : Critical / Error
+
 ## Implementation Details
 
 #### Processing Dataset Features
