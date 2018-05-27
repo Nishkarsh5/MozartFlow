@@ -15,14 +15,14 @@ class Classify:
                 self.read_yml = yaml.load(outfile)
 
             except yaml.YAMLError as error:
-                self.loglevel.error('[!] _config.yml file not found:', error)
+                self.loglevel.error('[/!/] _config.yml file not found:', error)
         
         with open(self.read_yml['_dataset']/self.read_yml['_dataFolderNames']+".json", 'r') as outfile:
             try:
                 self.dataset_names = json.load(outfile)
 
             except FileNotFoundError:
-                self.loglevel.error('[!] dataset labels not found')
+                self.loglevel.error('[/!/] dataset labels not found')
 
 
     def get_dataset(self):
@@ -53,11 +53,9 @@ class Classify:
         
         return datalist
 
-
-    def get_silence(self, DTFTarray, threshold=0.001):
+    @staticmethod
+    def get_silence(DTFTarray, threshold=0.001):
         """find the position till which audio is silent, default threshold=0.001"""
-
-        self.loglevel.info('[.] Threshold for silent part of audio is assumed to be', threshold)
 
         trim = 0
 
