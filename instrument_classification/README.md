@@ -32,17 +32,31 @@ gavy42@jarvis:~/MozartFlow/instrument_classification$
 
 - Instruments available are `["banjo", "bass clarinet", "bassoon", "cello", "clarinet", "contrabassoon", "cor anglais", "double bass", "flute", "french horn":, "guitar", "mandolin", "oboe", "percussion", "saxophone", "trombone", "trumpet", "tuba", "viola", "violin"]`.
 
-## Terminal Terminology
+## Implementation Details
+
+#### Processing Dataset Features
+The music pieces have their leading and ending silence trimmed. The threshold of trimming is 0.001 - if the intensity of the sound in the frame is below 0.1% of the highest sound intensity in the audio file, then the frame is trimmed out.
+
+
+#### Extracting Features from Datset
+The Mel Frequency Cepstral Coefficents (MFCCs) of each music piece was extracted using Librosa. For each audio file, its MFCCs are averaged to produce the final, length-20 feature vector.
+
+
+#### Classification with Machine Learning
+K-nearest neighbors algorithm is used to train the classifier. And then predict the output of any given audio file.
+
+## Performance Details
+
+
+## Terminal-Output Terminology
 - ```[.]``` : Info
 - ```[#]``` : Debug
 - ```[*]``` : Status
 - ```[!]``` : Warning
 - ```[/!/]``` : Critical / Error
 
-## Implementation Details
+## Support & Contribution
 
-#### Processing Dataset Features
-#### Extracting Features from Datset
-#### Classification with Machine Learning
+If you have any problem understanding the code, feel free to raise an issue. Also, you can drop a mail regarding any question, on the e-mail address provided.
 
-## Performance Details
+Pull requests are welcome! If they enhance some feature of the model or show a better approach.
