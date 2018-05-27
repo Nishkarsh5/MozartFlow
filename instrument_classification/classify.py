@@ -1,5 +1,5 @@
 import glob
-import pyyaml
+import yaml
 import librosa
 import numpy as np
 
