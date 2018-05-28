@@ -1,6 +1,7 @@
+json
 glob
+click
 numpy
 pyyaml
 librosa
-sklearn
 argparse
