@@ -63,10 +63,10 @@ class Model:
         markline2 = math.floor(0.75*len(datalist['labels']))
 
 
-        train_features = datalist['features'][:(markline1[0])]
-        test_features = datalist['features'][(markline1[0]):]
-        train_labels = datalist['labels'][:(markline2[1])]
-        test_labels = datalist['labels'][(markline2[1]):]
+        train_features = datalist['features'][:(markline1)]
+        test_features = datalist['features'][(markline1):]
+        train_labels = datalist['labels'][:(markline2)]
+        test_labels = datalist['labels'][(markline2):]
 
         logger.info('[*] Training started with 75% Dataset ...')
 
@@ -143,7 +143,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='MozartFlow: Observing the flow of music.')
 
-    parser.add_argument('-k', '--knn', help='K in K-nearest neighbours algorithm', default=5)
+    parser.add_argument('-k', '--knn', help='K in K-nearest neighbours algorithm', default=2)
     parser.add_argument('-ll', '--loglevel', help='Set the logging level', type=str, choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'])
     parser.add_argument('-p', '--path', help='Filepath of the audio file, need to be labeled', type=str, default='')
         
