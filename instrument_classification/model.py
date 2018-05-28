@@ -1,3 +1,5 @@
+import json
+import yaml
 import librosa
 import logging
 import argparse
@@ -8,6 +10,9 @@ import classify
 from collections import namedtuple
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+
+
+logger = logging.getLogger()
 
 class Model:
     def __init__(self, knn, loglevel):
@@ -23,7 +28,8 @@ class Model:
             except yaml.YAMLError as error:
                 self.loglevel.error('[/!/] _config.yml file not found:', error)
         
-        with open(self.read_yml['_dataset']/self.read_yml['_dataFolderNames']+".json", 'r') as outfile:
+        jsonfile = self.read_yml['_dataset']+"/"+self.read_yml['_dataFolderNames']+".json"
+        with open(jsonfile, 'r') as outfile:
             try:
                 self.dataset_names = json.load(outfile)
 
@@ -33,7 +39,7 @@ class Model:
     def model(self):
         """main model, with supervised machine learning; calls to process datasets"""
 
-        self.loglevel.info('[*] Starting processing of dataset ...')
+        logger.info('[*] Starting processing of dataset ...')
         cl = classify.Classify(self.loglevel)
         data = cl.get_dataset()
 
@@ -122,7 +128,6 @@ class Model:
 def main():
     """Main method for machine learning model"""
     
-    logger = logging.getLogger()
 
     parser = argparse.ArgumentParser(description='MozartFlow: Observing the flow of music.')
 
@@ -131,17 +136,19 @@ def main():
     parser.add_argument('-p', '--path', help='Filepath of the audio file, need to be labeled', type=str, default='')
         
     args = parser.parse_args()
+    
     logging.basicConfig(level=args.loglevel)
 
-    model = Model(args.knn, args.loglevel, args.testu)
+    model = Model(args.knn, args.loglevel)
+    model.model()
 
     if args.path is not '':
         model.prediction(args.path)
     else:
-        print('[-.-] Ain\'t you testing something! Well, that\'s a shame. I learned just for you.')
+        print('\n[-.-] Ain\'t you testing something! Well, that\'s a shame. I learned just for you.')
 
-    print('----/---- Created by ----/----')
-    for creator in model.read_yml['creator']:
+    print('\n\n----/---- Created by ----/----')
+    for creator in model.read_yml['_creator']:
         print('Lord', creator)
 
 if __name__=="__main__":
