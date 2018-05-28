@@ -35,7 +35,7 @@ class Classify:
         datalist = []
 
         files_pathlist = self.get_path()
-        logger.info('[*] Iterating over instances of', str(len(files_pathlist)), 'file paths ...')
+        logger.info('[*] Iterating over instances of {} file paths ...'.format(str(len(files_pathlist))))
         
         with click.progressbar(range(len(files_pathlist))) as progressbar:    
             for progress in progressbar:

@@ -1,15 +1,14 @@
+import math
 import json
 import yaml
 import librosa
 import logging
 import argparse
 import numpy as np
-
 import classify
 
 from collections import namedtuple
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.model_selection import train_test_split
 
 
 logger = logging.getLogger()
@@ -19,14 +18,14 @@ class Model:
         """initializing knn, loglevel instance, config file, and dataset name file"""
 
         self.knn = knn
-        self.loglevel = loglevel
+        logger = loglevel
 
         with open('../_config.yml', 'r') as outfile:
             try:
                 self.read_yml = yaml.load(outfile)
 
             except yaml.YAMLError as error:
-                self.loglevel.error('[/!/] _config.yml file not found:', error)
+                logger.error('[/!/] _config.yml file not found:', error)
         
         jsonfile = self.read_yml['_dataset']+"/"+self.read_yml['_dataFolderNames']+".json"
         with open(jsonfile, 'r') as outfile:
@@ -34,18 +33,18 @@ class Model:
                 self.dataset_names = json.load(outfile)
 
             except FileNotFoundError:
-                self.loglevel.error('[/!/] dataset labels not found')
+                logger.error('[/!/] dataset labels not found')
 
     def model(self):
         """main model, with supervised machine learning; calls to process datasets"""
 
         logger.info('[*] Starting processing of dataset ...')
-        cl = classify.Classify(self.loglevel)
+        cl = classify.Classify(logger)
         data = cl.get_dataset()
 
-        self.loglevel.info('[*] Using K-nearest neighbour algorith ...')
-        self.KNN = KNeighborsClassifier(n_neightbors = self.knn)
-        train_and_test(data)
+        logger.info('[*] Using K-nearest neighbour algorithm ...')
+        self.knn_model = KNeighborsClassifier(n_neighbors = self.knn)
+        self.train_and_test(data)
 
         return True
 
@@ -54,19 +53,30 @@ class Model:
         """begins the training and testing model"""
 
         np.random.shuffle(data)
-        datatuple = unpack_data(data)
+        datalist = self.unpack_data(data)
 
-        self.loglevel.info('[*] 75-25 partition of datasets ...')
-        train_features, test_features, train_labels, test_labels = train_test_split(datatuple.features, datatuple.labels, random_state=0)
-        self.loglevel.info('[*] Training started with 75% dataset ...')
+        print(len(datalist['features']))
 
-        self.KNN.fit(train_features, train_labels)
+        logger.info('[*] 75-25 partition of datasets ...')
 
-        self.loglevel.info('[*] Testing started with 25% dataset ...')
+        markline1 = math.floor(0.75*(len(datalist['features'])))
+        markline2 = math.floor(0.75*len(datalist['labels']))
+
+
+        train_features = datalist['features'][:(markline1[0])]
+        test_features = datalist['features'][(markline1[0]):]
+        train_labels = datalist['labels'][:(markline2[1])]
+        test_labels = datalist['labels'][(markline2[1]):]
+
+        logger.info('[*] Training started with 75% Dataset ...')
+
+        self.knn_model.fit(train_features, train_labels)
+
+        logger.info('[*] Testing started with 25% Dataset ...')
         print('/---------------Accuracy----------------/') 
         
-        accuracy = self.KNN.score(train_features, train_labels)
-        print('Test set accuracy','{:.2f}'.format(accuracy*100), '%')
+        accuracy = self.knn_model.score(train_features, train_labels)
+        print('Test set accuracy {:.2f} %'.format(accuracy*100))
 
         if accuracy < 0.40:
             print('[-.-!] Thanks for tryin\' but this machine ain\'t learning.')
@@ -77,10 +87,10 @@ class Model:
     def train(self, data):
         """training with full dataset, without testing"""
 
-        self.loglevel('[.] Training with whole dataset ...')
+        logger('[.] Training with whole dataset ...')
         
-        datatuple = unpack_data(data)
-        self.KNN.fit(datatuple.features, datatuple.labels)
+        datalist = self.unpack_data(data)
+        self.knn_model.fit(datatuple['features'], datatuple['labels'])
 
 
     def prediction(self, filepath):
@@ -89,12 +99,12 @@ class Model:
         try:
             DTFTarray, sampling_rate = librosa.load(filepath)
         except Exception as e:
-            self.loglevel.error('[/!/] Librosa loading test file failed.')
+            logger.error('[/!/] Librosa loading test file failed.')
 
         begin_silence = classify.get_silence(DTFTarray)
         end_silence = classify.get_silence(np.flipud(DTFTarray))
 
-        self.loglevel.info('[.] Trimming the audio ...')
+        logger.info('[.] Trimming the audio ...')
 
         DTFTarray_trimmed = DTFTarray[begin_silence: (len(DTFTarray) - end_silence)]
 
@@ -103,8 +113,8 @@ class Model:
         
         features = average.reshape(20)
 
-        self.loglevel.info('[.] Predicting with the audio features ...')
-        predicted = self.KNN.predict(datatuple.features)
+        logger.info('[.] Predicting with the audio features ...')
+        predicted = self.knn_model.predict(datatuple.features)
         
         inv_dataset_names = {value: key for key, value in self.dataset_names.items()}
 
@@ -117,12 +127,14 @@ class Model:
     def unpack_data(self, data):        
         """unpacking data from list to numpy array; returning in namedtuple from collections"""
 
-        filenames = np.array(map(lambda n: n[0], data))
-        features = np.array(map(lambda n: n[1], data))
-        labels = np.array(map(lambda n: n[0], data))
+        datadict = {'filenames': [], 'features': [], 'labels': [] }
 
-        Tup = namedtuple('Tup', 'filenames features labels')
-        return Tup(filenames = filenames, features = features, labels = labels)
+        for l in data:
+            datadict['filenames'].append(l[0])
+            datadict['features'].append(l[1])
+            datadict['labels'].append(l[2])
+        
+        return datadict
 
 
 def main():
