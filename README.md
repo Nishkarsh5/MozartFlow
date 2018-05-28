@@ -24,6 +24,7 @@ Using Machine Learning to Study Music.
 - [Techcentaur](https://github.com/techcentaur)
 
 ## Support
-If you have any problem trying to understand the code, feel free to raise and issue
+If you have any problem trying to understand the code, feel free to raise and issue or drop a mail [here](mailto:ankit03june@gmail.com).
 
 ## Contribution
+Any better approach, in efficiency or accuracy, is appreciated. Feel free to raise an issue and then make a pull request in continuation.
