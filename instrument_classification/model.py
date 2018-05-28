@@ -39,15 +39,16 @@ class Model:
         """main model, with supervised machine learning; calls to process datasets"""
 
         logger.info('[*] Starting processing of dataset ...')
+        
         cl = classify.Classify(logger)
         data = cl.get_dataset()
 
         logger.info('[*] Using K-nearest neighbour algorithm ...')
+        
         self.knn_model = KNeighborsClassifier(n_neighbors = self.knn)
         self.train_and_test(data)
 
         return True
-
 
     def train_and_test(self, data):
         """begins the training and testing model"""
@@ -55,16 +56,14 @@ class Model:
         np.random.shuffle(data)
         datalist = self.unpack_data(data)
 
-        print(len(datalist['features']))
-
         logger.info('[*] 75-25 partition of datasets ...')
 
         markline1 = math.floor(0.75*(len(datalist['features'])))
         markline2 = math.floor(0.75*len(datalist['labels']))
 
-
         train_features = datalist['features'][:(markline1)]
         test_features = datalist['features'][(markline1):]
+        
         train_labels = datalist['labels'][:(markline2)]
         test_labels = datalist['labels'][(markline2):]
 
@@ -73,16 +72,15 @@ class Model:
         self.knn_model.fit(train_features, train_labels)
 
         logger.info('[*] Testing started with 25% Dataset ...')
-        print('/---------------Accuracy----------------/') 
+        print('\n/---------------Accuracy----------------/') 
         
         accuracy = self.knn_model.score(train_features, train_labels)
         print('Test set accuracy {:.2f} %'.format(accuracy*100))
 
         if accuracy < 0.40:
-            print('[-.-!] Thanks for tryin\' but this machine ain\'t learning.')
+            logger.warning('[-.-!] Thanks for tryin\' but this machine ain\'t learning.')
 
         return True
-
 
     def train(self, data):
         """training with full dataset, without testing"""
@@ -91,7 +89,6 @@ class Model:
         
         datalist = self.unpack_data(data)
         self.knn_model.fit(datatuple['features'], datatuple['labels'])
-
 
     def prediction(self, filepath):
         """prediction of the new audio input / filepath to that"""
@@ -123,19 +120,18 @@ class Model:
 
         return True
 
-
     def unpack_data(self, data):        
         """unpacking data from list to numpy array; returning in namedtuple from collections"""
 
         datadict = {'filenames': [], 'features': [], 'labels': [] }
 
         for l in data:
+            
             datadict['filenames'].append(l[0])
             datadict['features'].append(l[1])
             datadict['labels'].append(l[2])
         
         return datadict
-
 
 def main():
     """Main method for machine learning model"""
@@ -159,9 +155,11 @@ def main():
     else:
         print('\n[-.-] Ain\'t you testing something! Well, that\'s a shame. I learned just for you.')
 
-    print('\n\n----/---- Created by ----/----')
+    logger.info('\n\n-------/------- Created by ------/-------')
     for creator in model.read_yml['_creator']:
-        print('Lord', creator)
+        logger.info('Lord {}'.format(creator))
+
+
 
 if __name__=="__main__":
     main()
