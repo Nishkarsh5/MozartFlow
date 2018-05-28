@@ -1,0 +1,25 @@
+{
+	"meanfreq": 0, 
+	"sd": 1, 
+	"median": 2, 
+	"Q25": 3, 
+	"Q75": 4, 
+	"IQR": 5, 
+	"skew": 6, 
+	"kurt": 7, 
+	"sp.ent": 8, 
+	"sfm": 9,
+	"mode": 10,
+	"centroid": 11, 
+	"peakf": 12, 
+	"meanfun": 13, 
+	"minfun": 14,
+	"maxfun": 15, 
+	"meandom": 16,
+	"mindom": 17, 
+	"maxdom": 18, 
+	"dfrange": 19, 
+	"modindx": 20, 
+	"label": 21
+} 
+
