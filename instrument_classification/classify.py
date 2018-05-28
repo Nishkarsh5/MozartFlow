@@ -5,8 +5,8 @@ import click
 import librosa
 import logging
 import numpy as np
-logger = logging.getLogger()
 
+logger = logging.getLogger()
 
 class Classify:
     def __init__(self, loglevel):
@@ -28,7 +28,6 @@ class Classify:
             except FileNotFoundError:
                 logger.error('[/!/] dataset labels not found')
 
-
     def get_dataset(self):
         """create dataset with as [filepath, features, label], with initial trimming"""
         
@@ -38,6 +37,7 @@ class Classify:
         logger.info('[*] Iterating over instances of {} file paths ...'.format(str(len(files_pathlist))))
         
         with click.progressbar(range(len(files_pathlist))) as progressbar:    
+            
             for progress in progressbar:
                 filepath = files_pathlist[progress]
 
