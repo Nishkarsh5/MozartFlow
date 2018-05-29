@@ -20,7 +20,7 @@ class Model:
         logger.info('[*] Preparing model for classification ...')
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(datasetdict['features'], datasetdict['labels'], random_state=42)
         self.forest = RandomForestClassifier(n_estimators=self.DTrees, random_state=42)
-        logger.infor('[.] Model formed' )
+        logger.info('[.] Model formed' )
 
         self.train()
 
@@ -28,10 +28,10 @@ class Model:
 
         self.forest.fit(self.X_train, self.y_train)
 
-        logger.info('[.]-----------/-------------Accuracy-------------/-----------')
+        print('\n----------Accuracy-----------')
         self.accuracy = self.forest.score(self.X_test, self.y_test)*100
-        logger.info('\n[*] Accuracy on training set: {:.3f} %'.format(self.forest.score(self.X_train, self.y_train)*100))
-        logger.info('[*] Accuracy on test set: {:.3f} %\n'.format(accuracy))
+        print('\n[*] Accuracy on training set: {:.3f} %'.format(self.forest.score(self.X_train, self.y_train)*100))
+        print('[*] Accuracy on test set: {:.3f} %\n'.format(self.accuracy))
 
         return True
 
