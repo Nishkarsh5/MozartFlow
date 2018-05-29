@@ -1,4 +1,6 @@
 import csv
+import click
+import logging
 import numpy as np
 
 logger = logging.getLogger()
@@ -25,16 +27,17 @@ class ProcessDataset:
         except FileNotFoundError:
             logger.error('[/!/] CSV file not found! Couldn\'t process dataset. Duh!!')
 
+        print('[*] Training over {} instances ...'.format(len(datalist)))
 
-        for i in range(len(datalist[0])-1):
-            featuremap = (map(lambda n: n[i], datalist))
-            flist = list(featuremap)
+        with click.progressbar(range(len(datalist[0])-1)) as progressbar:    
+            for progress in progressbar:
+                featuremap = (map(lambda n: n[progress], datalist))
+                flist = list(featuremap)
 
-            del flist[0]
+                del flist[0]
 
-            featurearray = np.array(flist)
-            featurelist.append(featurearray)
-
+                featurearray = np.array(flist)
+                featurelist.append(featurearray)
 
         labels = list(map(lambda n: n[len(datalist[0])-1], datalist))
         del labels[0]
@@ -44,7 +47,7 @@ class ProcessDataset:
 
         logger.info('[.] Dataset created; featured and labeled ')
         logger.debug('[!] Dictionary returned as {\'features\': features, \'labels\': labels}')
-        
+
         return {'features': features, 'labels': labels}
 
 if __name__=="__main__":
