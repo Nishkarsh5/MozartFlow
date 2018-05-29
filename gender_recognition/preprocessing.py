@@ -1,21 +1,30 @@
 import csv
 import numpy as np
 
+logger = logging.getLogger()
 
 class ProcessDataset:
-    def __init__(self):
-        pass
+    def __init__(self, log):
+        """Initalizses logging basic config"""
+
+        logging.basicConfig(level=log)
 
     def process_dataset(self):
+        """Start processing dataset from csv file"""
+
         datalist = []
         featurelist = []
         labels = []
 
-        with open('./dataset/voice.csv', 'r') as csvfile:
-            data = csv.reader(csvfile)
+        try:
+            with open('./dataset/voice.csv', 'r') as csvfile:
+                data = csv.reader(csvfile)
 
-            for d in data:  
-                datalist.append(d)
+                for d in data:  
+                    datalist.append(d)
+        except FileNotFoundError:
+            logger.error('[/!/] CSV file not found! Couldn\'t process dataset. Duh!!')
+
 
         for i in range(len(datalist[0])-1):
             featuremap = (map(lambda n: n[i], datalist))
@@ -33,7 +42,17 @@ class ProcessDataset:
 
         features = np.transpose(np.array(featurelist))
 
+        logger.info('[.] Dataset created; featured and labeled ')
+        logger.debug('[!] Dictionary returned as {\'features\': features, \'labels\': labels}')
+        
         return {'features': features, 'labels': labels}
 
 if __name__=="__main__":
-    p = ProcessDataset().process_dataset()
+
+    parser = argparse.ArgumentParser(description='Processing dataset for gender voice recognition')
+    parser.add_argument('-L', '--log', help='Set the logging level', type=str, choices=['DEBUG','INFO','WARNING','ERROR','CRITICAL'])
+        
+    args = parser.parse_args()
+    logging.basicConfig(level=args.log)
+
+    p = ProcessDataset(args.log).process_dataset()
