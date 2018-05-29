@@ -1,0 +1,4 @@
+csv
+numpy
+argparse
+speech_recognition
