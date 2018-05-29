@@ -1,4 +1,3 @@
-import begin
 import logging
 import argparse
 import speech_recognition as sr
@@ -14,9 +13,9 @@ class Model:
     def __init__(self, no_DTrees):
         self.DTrees = no_DTrees
 
-    def model(self):
+    def model(self, log):
         logger.info('[*] Processing dataset ...\n')
-        datasetdict = preprocessing.ProcessDataset().process_dataset()
+        datasetdict = preprocessing.ProcessDataset(log).process_dataset()
 
         logger.info('[*] Preparing model for classification ...')
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(datasetdict['features'], datasetdict['labels'], random_state=42)
@@ -86,6 +85,7 @@ if __name__ == "__main__":
         mod.predictnow()
     elif args.predict is not '':
         mod.predict(args.predict)
-
+    else:
+        mod.model(args.log)
         
 
