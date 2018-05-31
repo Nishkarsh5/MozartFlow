@@ -1,13 +1,14 @@
 import librosa
 import random
 import math
+import csv
+import glob
 
 class Edited:
 
 	def trim(self, file_pathlist):
-		for file in file_pathlist:
-			y,sr=librosa.load(file)
-			self.yt,index=librosa.effects.trim(y)
+		y,sr=librosa.load(file_pathlist)
+		self.yt,index=librosa.effects.trim(y)
 
 	def duration(self):		
 		length=len(i)/sr
@@ -20,5 +21,18 @@ class Edited:
 		mfccs = librosa.feature.mfcc(y=self.yt)
         average = np.mean(mfccs, axis=1)
         features = average.reshape(20)
-			
+        return features
+
+	def files(self):
+		files=glob.glob('./dataset/*/*.mp3')
+		return files
+
+	def label(self,file_path):
+		fp=file_path.split("/")
+		fdict={"Classical": 0, "Hip hop": 1, "Pop": 2, "Rock": 3}
+		return fdict[fp[2]]
+
+		
+
+
 

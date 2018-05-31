@@ -1,5 +1,5 @@
 instrument_classification/dataset/
-
+genre_classification/dataset/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
