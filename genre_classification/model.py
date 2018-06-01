@@ -16,8 +16,8 @@ class Model:
 		f=e.files()
 
 		for i in f:
+			e.cut(i)
 			e.trim(i)
-			e.duration()
 			feature= e.feature()
 			lab= e.label(i)
 			data_list.append([i, feature, lab])
