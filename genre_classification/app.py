@@ -8,15 +8,15 @@ import numpy as np
 class Edited:
 
 	def trim(self, file_pathlist):
-		y, sr = librosa.load(file_pathlist)
+		y, self.sr = librosa.load(file_pathlist)
 		self.yt,index=librosa.effects.trim(y)
 
 	def duration(self):
-		length=len(i)/sr
+		length=len(self.yt)/self.sr
 		length=math.floor(length/10)
 		r=random.randint(0, length-1)
 		r=r*10
-		self.yt=self.yt[r*sr:(r+1)*sr]
+		self.yt=self.yt[r*self.sr:(r+1)*self.sr]
 	
 	def feature(self):
 		mfccs = librosa.feature.mfcc(y=self.yt)
@@ -25,11 +25,11 @@ class Edited:
 		return features
 
 	def files(self):
-		files=glob.glob('.\dataset\*\*.mp3')
+		files=glob.glob('./dataset/*/*.mp3')
 		return files
 
 	def label(self,file_path):
-		fp=file_path.split('\\')
+		fp=file_path.split('/')
 		fdict={"Classical": 0, "Hip hop": 1, "Pop": 2, "Rock": 3}
 		return fdict[fp[2]]
 
