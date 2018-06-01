@@ -4,6 +4,7 @@ import math
 import csv
 import glob
 import numpy as np
+from pydub import AudioSegment
 
 class Edited:
 
@@ -33,7 +34,13 @@ class Edited:
 		fdict={"Classical": 0, "Hip hop": 1, "Pop": 2, "Rock": 3}
 		return fdict[fp[2]]
 
-
+	def cut(self, file_path):
+		start = 1*60*1000+50*1000
+		stop = 2*60*1000
+		song = AudioSegment.from_mp3(file_path)
+		extract = song[start:stop]
+		extract.export(file_path, format="mp3")
+			
 
 
 
