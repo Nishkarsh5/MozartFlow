@@ -10,13 +10,16 @@ from sklearn.model_selection import train_test_split
 
 
 class Model:
+	
 	def get_data(self):
-		data_list= []
-		e=app.Edited()
-		f=e.files()
+		data_list = []
+		
+		e = app.Edited()
+		f = e.files()
 
 		for i in f:
 			e.cut(i)
+			break
 			e.trim(i)
 			feature= e.feature()
 			lab= e.label(i)
@@ -35,7 +38,6 @@ class Model:
 		return datadict	
 
 	def model(self):
-
 		data= self.get_data()
 		self.knn_model= KNeighborsClassifier(n_neighbors=5)
 		self.train_n_test(data)
@@ -43,7 +45,7 @@ class Model:
 	def train_n_test(self, data):
 
 		np.random.shuffle(data)
-		datadict = self.unpack_data(data)
+		datadict = self.unpack(data)
 
 		X_train, X_test, Y_train, Y_test= train_test_split(datadict['features'], datadict['label'], random_state=50)
 
@@ -53,7 +55,7 @@ class Model:
 
 
 if __name__=="__main__":
-	o=Model()
+	o = Model()
 	o.model()
 
 

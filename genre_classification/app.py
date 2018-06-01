@@ -26,7 +26,8 @@ class Edited:
 		return features
 
 	def files(self):
-		files=glob.glob('./dataset/*/*.mp3')
+		files = glob.glob('./dataset/*/*.mp3')
+
 		return files
 
 	def label(self,file_path):
@@ -35,12 +36,12 @@ class Edited:
 		return fdict[fp[2]]
 
 	def cut(self, file_path):
-		start = 1*60*1000+50*1000
+		start = 1*60*1000 + 50*1000
 		stop = 2*60*1000
+		
 		song = AudioSegment.from_mp3(file_path)
 		extract = song[start:stop]
+		
 		extract.export(file_path, format="mp3")
-			
-
 
 
