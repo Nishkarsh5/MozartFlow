@@ -84,7 +84,7 @@ class Model:
 
     def train(self, data):
         """training with full dataset, without testing"""
-
+        
         logger('[.] Training with whole dataset ...')
         
         datalist = self.unpack_data(data)

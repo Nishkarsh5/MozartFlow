@@ -1,4 +1,4 @@
-import app	
+import app
 import librosa
 import random
 import math
@@ -13,13 +13,13 @@ class Model:
 	def get_data(self):
 		data_list= []
 		e=app.Edited()
-		f=e.files(self)
+		f=e.files()
 
 		for i in f:
-			e.trim(self, i)
-			e.duration(self)
-			feature= e.feature(self)
-			lab= e.label(self,i)
+			e.trim(i)
+			e.duration()
+			feature= e.feature()
+			lab= e.label(i)
 			data_list.append([i, feature, lab])
 		return data_list
 
@@ -36,19 +36,26 @@ class Model:
 
 	def model(self):
 
-		data= get_data(self)
+		data= self.get_data()
 		self.knn_model= KNeighborsClassifier(n_neighbors=5)
 		self.train_n_test(data)
 
 	def train_n_test(self, data):
 
 		np.random.shuffle(data)
-        datadict = self.unpack_data(data)	
+		datadict = self.unpack_data(data)
 
-        X_train, X_test, Y_train, Y_test= train_test_split(datadict['features'], datadict['label'], random_state=50)
+		X_train, X_test, Y_train, Y_test= train_test_split(datadict['features'], datadict['label'], random_state=50)
 
-        self.knn_model.fit(X_train, Y_train)
-        accuracy= self.knn_model.score(X_test, Y_test)
-        print('Test set accuracy is {:.2f}'.format(accuracy*100))
+		self.knn_model.fit(X_train, Y_train)
+		accuracy= self.knn_model.score(X_test, Y_test)
+		print('Test set accuracy is {:.2f}'.format(accuracy*100))
 
-        
+
+if __name__=="__main__":
+	o=Model()
+	o.model()
+
+
+
+
