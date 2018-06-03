@@ -79,7 +79,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logging.basicConfig(level=args.log)
 
-    mod = Model(args.trees)
+    mod = Model(int(args.trees))
 
     if args.predictnow:
         mod.predictnow()
